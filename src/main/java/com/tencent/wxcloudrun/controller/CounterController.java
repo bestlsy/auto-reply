@@ -1,5 +1,6 @@
 package com.tencent.wxcloudrun.controller;
 
+import com.sun.deploy.net.HttpUtils;
 import com.tencent.wxcloudrun.dto.ActionRequest;
 import com.tencent.wxcloudrun.dto.MessageRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class CounterController {
     result.put("CreateTime", System.currentTimeMillis()/ 1000);
     result.put("MsgType", "text");
     result.put("Content", map.get("Content"));
+
     logger.info((String) map.get("FromUserName") + map.get("ToUserName") + map.get("Content") + "");
     return result;
   }
