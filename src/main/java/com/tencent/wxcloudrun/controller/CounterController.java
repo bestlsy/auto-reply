@@ -1,5 +1,6 @@
 package com.tencent.wxcloudrun.controller;
 
+import com.tencent.wxcloudrun.dto.ActionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.wxcloudrun.config.ApiResponse;
@@ -29,6 +30,12 @@ public class CounterController {
   public CounterController(@Autowired CounterService counterService) {
     this.counterService = counterService;
     this.logger = LoggerFactory.getLogger(CounterController.class);
+  }
+
+  @PostMapping("/api/message")
+  public String message(@RequestBody ActionRequest action) {
+    System.out.println(action);
+    return "success";
   }
 
 
