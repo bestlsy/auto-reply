@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.List;
@@ -35,10 +36,26 @@ public class CounterController {
   }
 
   @PostMapping("/api/message")
-  public String message(@RequestBody Map<String,Object> map) {
+  public Map<String, Object> message(@RequestBody Map<String,Object> map) {
+    Map<String, Object> result = new HashMap<>();
+    result.put("ToUserName", map.get("FromUserName"));
+    result.put("FromUserName", map.get("ToUserName"));
+    result.put("CreateTime", System.currentTimeMillis()/ 1000);
+    result.put("MsgType", "text");
+    result.put("Content", map.get("Content"));
     logger.info((String) map.get("FromUserName") + map.get("ToUserName") + map.get("Content") + "");
-    return "success";
+    return result;
   }
+
+  /**
+   * {
+   *   "ToUserName": "用户OPENID",
+   *   "FromUserName": "公众号/小程序原始ID",
+   *   "CreateTime": "发送时间", // 整型，例如：1648014186
+   *   "MsgType": "text",
+   *   "Content": "文本消息"
+   * }
+   */
 
 
   /**
