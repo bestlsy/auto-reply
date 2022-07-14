@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -34,9 +35,8 @@ public class CounterController {
   }
 
   @PostMapping("/api/message")
-  public String message(@RequestBody MessageRequest action) {
-    System.out.println(action);
-    logger.info(action.toString());
+  public String message(@RequestBody Map<String,Object> map) {
+    logger.info((String) map.get("FromUserName") + map.get("ToUserName") + map.get("Content") + "");
     return "success";
   }
 
