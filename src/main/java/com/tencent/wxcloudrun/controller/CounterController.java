@@ -9,6 +9,7 @@ import com.tencent.wxcloudrun.service.CounterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * counter控制器
@@ -27,6 +29,8 @@ public class CounterController {
   final CounterService counterService;
   final Logger logger;
 
+  final Map<String, Object> cache = new ConcurrentHashMap<>();
+
   public CounterController(@Autowired CounterService counterService) {
     this.counterService = counterService;
     this.logger = LoggerFactory.getLogger(CounterController.class);
@@ -35,6 +39,11 @@ public class CounterController {
   @PostMapping("/api/message")
   public Map<String, Object> message(@RequestBody Map<String,Object> map) {
     Map<String, Object> result = new HashMap<>();
+    Object msgId = cache.get((String) map.get("MsgId"));
+    if (!ObjectUtils.isEmpty(msgId)) {
+      return result;
+    }
+    cache.put((String) msgId, map);
     result.put("ToUserName", map.get("FromUserName"));
     result.put("FromUserName", map.get("ToUserName"));
     result.put("CreateTime", map.get("CreateTime"));
@@ -42,8 +51,8 @@ public class CounterController {
     result.put("Content", "服务器回复" + map.get("Content"));
     String mapJson = getJson(map);
     String resultJson = getJson(result);
-    logger.info(mapJson.toString());
-    logger.info(resultJson.toString());
+    logger.info("入参数 "+mapJson.toString());
+    logger.info("出参数 " + resultJson.toString());
     return result;
   }
 
