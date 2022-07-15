@@ -29,7 +29,7 @@ public class CounterController {
   final CounterService counterService;
   final Logger logger;
 
-  final Map<String, Object> cache = new ConcurrentHashMap<>();
+  final Map<Object, Object> cache = new ConcurrentHashMap<>();
 
   public CounterController(@Autowired CounterService counterService) {
     this.counterService = counterService;
@@ -39,11 +39,11 @@ public class CounterController {
   @PostMapping("/api/message")
   public Map<String, Object> message(@RequestBody Map<String,Object> map) {
     Map<String, Object> result = new HashMap<>();
-    Object msgId = cache.get((String) map.get("MsgId"));
+    Object msgId = cache.get(map.get("MsgId"));
     if (!ObjectUtils.isEmpty(msgId)) {
       return result;
     }
-    cache.put((String) msgId, map);
+    cache.put(msgId, map);
     result.put("ToUserName", map.get("FromUserName"));
     result.put("FromUserName", map.get("ToUserName"));
     result.put("CreateTime", map.get("CreateTime"));
