@@ -37,13 +37,13 @@ public class CounterController {
   }
 
   @PostMapping("/api/message")
-  public Map<String, Object> message(@RequestBody Map<String,Object> map) {
+  public Object message(@RequestBody Map<String,Object> map) {
     Map<String, Object> result = new HashMap<>();
     Object msgId = cache.get(map.get("MsgId"));
     if (!ObjectUtils.isEmpty(msgId)) {
-      return result;
+      return "success";
     }
-    cache.put(msgId, map);
+    cache.put(map.get("MsgId"), map);
     result.put("ToUserName", map.get("FromUserName"));
     result.put("FromUserName", map.get("ToUserName"));
     result.put("CreateTime", map.get("CreateTime"));
