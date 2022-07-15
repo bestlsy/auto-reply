@@ -1,5 +1,7 @@
 package com.tencent.wxcloudrun.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.deploy.net.HttpUtils;
 import com.tencent.wxcloudrun.dto.ActionRequest;
 import com.tencent.wxcloudrun.dto.MessageRequest;
@@ -41,12 +43,24 @@ public class CounterController {
     Map<String, Object> result = new HashMap<>();
     result.put("ToUserName", map.get("FromUserName"));
     result.put("FromUserName", map.get("ToUserName"));
-    result.put("CreateTime", System.currentTimeMillis()/ 1000);
+    result.put("CreateTime", map.get("CreateTime"));
     result.put("MsgType", "text");
-    result.put("Content", map.get("Content"));
-
-    logger.info((String) map.get("FromUserName") + map.get("ToUserName") + map.get("Content") + "");
+    result.put("Content", "服务器回复" + map.get("Content"));
+    String mapJson = getJson(map);
+    String resultJson = getJson(result);
+    logger.info(mapJson.toString());
+    logger.info(resultJson.toString());
     return result;
+  }
+
+  private String getJson(Object ob) {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String value = mapper.writeValueAsString(ob);
+      return value;
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
