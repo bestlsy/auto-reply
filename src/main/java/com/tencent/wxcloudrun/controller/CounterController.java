@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.wxcloudrun.config.ApiResponse;
 import com.tencent.wxcloudrun.dto.CounterRequest;
+import com.tencent.wxcloudrun.dto.HttpUtils;
+import com.tencent.wxcloudrun.dto.ResultDTO;
 import com.tencent.wxcloudrun.model.Counter;
 import com.tencent.wxcloudrun.service.CounterService;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +40,7 @@ public class CounterController {
   }
 
   @PostMapping("/api/message")
-  public Object message(@RequestBody Map<String,Object> map) {
+  public Object message(@RequestBody Map<String,Object> map) throws Exception{
     Map<String, Object> result = new HashMap<>();
     Object msgId = cache.get(map.get("MsgId"));
     if (!ObjectUtils.isEmpty(msgId)) {
@@ -48,7 +51,7 @@ public class CounterController {
     result.put("FromUserName", map.get("ToUserName"));
     result.put("CreateTime", map.get("CreateTime"));
     result.put("MsgType", "text");
-    result.put("Content", "服务器回复" + map.get("Content"));
+    result.put("Content", getMessage());
     String mapJson = getJson(map);
     String resultJson = getJson(result);
     logger.info("入参数 "+mapJson.toString());
@@ -64,6 +67,16 @@ public class CounterController {
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private String getMessage() throws Exception{
+    String json = HttpUtils.get("https://api.dzzui.com/api/qinghua?format=json");
+    ObjectMapper mapper = new ObjectMapper();
+    ResultDTO readValue = mapper.readValue(new StringReader(json), ResultDTO.class);
+    if (readValue != null && readValue.getCode() == 1) {
+      return readValue.getText();
+    }
+    return "生产队的驴也不能这么干呀，让我休息一会吧～";
   }
 
   /**

@@ -1,17 +1,5 @@
 package com.tencent.wxcloudrun.dto;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -25,6 +13,13 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * HttpClient工具类
@@ -311,7 +306,7 @@ public class HttpUtils {
     }
 
     public static void main(String[] args) {
-        String s = get("https://api.lovelive.tools/api/SweetNothings/2/Serialization/Json?genderType=M");
+        String s = get("https://api.dzzui.com/api/qinghua?format=json");
         System.out.println(s);
     }
 
